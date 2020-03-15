@@ -8,6 +8,12 @@ class Date(models.Model):
     deaths = models.IntegerField("deaths")
     recovered = models.IntegerField("recovered_cases")
 
+    def __str__(self):
+        return str(self.date)
+
 class Country(models.Model):
     name = models.CharField(max_length=200)
     date = models.ForeignKey(Date, on_delete=models.CASCADE) 
+
+    def __str__(self):
+        return self.name

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="COVID-19 Tracker" content="">
+  <meta name="Tobias Nöthlich" content="">
+  <title>COVID-19 Tracker</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body style="background-color: #3b4147;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1">COVID-19 Tracker</span>
+        <div class="ml-auto">
+            <div class="dropdown">
+                <button class="btn btn-md btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    Select Country
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdown_user">
+                    <form class="px-4 py-2">
+                        <input type="search" class="form-control search" placeholder="Search..." autofocus="autofocus">
+                    </form>
+                    <div class="menuItems">
+                        <input type="button" class="dropdown-item" type="button" value="Afghanistan"/>
+                        <input type="button" class="dropdown-item" type="button" value="Germany"/>
+                        <input type="button" class="dropdown-item" type="button" value="United Kingdom"/>
+                    </div>
+                    <div style="display:none;" class="dropdown-header dropdown_empty">No entry found</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="bg-dark container-sm column ml-auto card">
+                <div class="card-body">
+                    <h2>{{ infected }}</h2>
+                    <span>Confirmed infections</span>
+                </div>
+            </div>
+            <div class="bg-secondary container-sm column ml-auto card"> 
+                <div class="card-body">
+                    <h2>{{ deaths }}</h2>
+                    <span>Deaths</span>
+                </div>
+            </div>
+            <div class="bg-secondary container-sm column ml-auto card"> 
+                <div class="card-body">
+                    <h2>{{ recovered }}</h2>
+                    <span>Recovered</span>
+                </div>
+            </div>
+            <div class="bg-secondary container-sm column ml-auto mr-auto card"> 
+                <div class="card-body">
+                    <h2>{{ mortality_rate }}%</h2>
+                    <span>Mortality rate</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="ml-auto" id="graph_worldwide"></div>
+            <div class="ml-auto mr-auto">test</div>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script>
+        $('.dropdown').each(function(index, dropdown){
+
+            //Find the input search box
+            let search = $(dropdown).find('.search');
+
+            //Find every item inside the dropdown
+            let items = $(dropdown).find('.dropdown-item');
+
+            //Capture the event when user types into the search box
+            $(search).on('input', function(){
+                filter($(search).val().trim().toLowerCase())
+            });
+
+            //For every word entered by the user, check if the symbol starts with that word
+            //If it does show the symbol, else hide it
+            function filter(word) {
+                let length = items.length
+                let collection = []
+                let hidden = 0
+                for (let i = 0; i < length; i++) {
+                    if (items[i].value.toLowerCase().includes(word)) {
+                        $(items[i]).show()
+                    }
+                    else {
+                        $(items[i]).hide()
+                        hidden++
+                    }
+                }
+                //If all items are hidden, show the empty view
+                if (hidden === length) {
+                $(dropdown).find('.dropdown_empty').show();
+                }
+                else {            
+                    $(dropdown).find('.dropdown_empty').hide();
+                }
+            }
+
+            //If the user clicks on any item, set the title of the button as the text of the item
+            $(dropdown).find('.dropdown-menu').find('.menuItems').on('click', '.dropdown-item', function(){
+                $(dropdown).find('.dropdown-toggle').text($(this)[0].value);
+                $(dropdown).find('.dropdown-toggle').dropdown('toggle');
+            })
+        });
+
+        var margin = {top: 10, right: 30, bottom: 30, left: 60},
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+        // append the svg object to the body of the page
+        var svg = d3.select("#graph_worldwide")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+    </script>
+
+</body>
+</html>
