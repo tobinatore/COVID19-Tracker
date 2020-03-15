@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# File containing the Django CSRF Key
+covid19_tracker/covid19_tracker/secret_key.py
