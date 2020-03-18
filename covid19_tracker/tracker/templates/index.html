@@ -35,30 +35,36 @@
         </div>
     </nav>
 
-    <div class="container">
-        <div class="row mt-5">
-            <div class="bg-dark container-sm column ml-auto card">
-                <div class="card-body">
-                    <h2>{{ infected }}</h2>
-                    <span>Confirmed infections</span>
+    <div class="container-fluid" style="width:100%;">
+        <div class="container-fluid row mt-5 justify-content-center">
+            <div class="container-sm column mr-auto ml-auto mb-auto">
+                <div class="text-center" style="color:white">
+                    <h2 style="color:orange">{{ countries }}</h2>
+                    <span class="text-center">Affected countries</span>
                 </div>
             </div>
-            <div class="bg-secondary container-sm column ml-auto card"> 
-                <div class="card-body">
-                    <h2>{{ deaths }}</h2>
-                    <span>Deaths</span>
+            <div class="container-sm column mr-auto ml-auto mb-auto">
+                <div class="text-center" style="color:white">
+                    <h2 style="color:orange">{{ infected }}</h2>
+                    <span class="text-center">Confirmed infections</span>
                 </div>
             </div>
-            <div class="bg-secondary container-sm column ml-auto card"> 
-                <div class="card-body">
-                    <h2>{{ recovered }}</h2>
-                    <span>Recovered</span>
+            <div class="container-sm column mr-auto ml-auto mb-auto"> 
+                <div class="text-center" style="color:white">
+                    <h2 style="color:red">{{ deaths }}</h2>
+                    <p class="text-center mb-0">Deaths</p>
                 </div>
             </div>
-            <div class="bg-secondary container-sm column ml-auto mr-auto card"> 
-                <div class="card-body">
+            <div class="container-sm column mr-auto ml-auto mb-auto"> 
+                <div class="text-center" style="color:white">
+                    <h2 style="color:green">{{ recovered }}</h2>
+                    <span >Recovered</span>
+                </div>
+            </div>
+            <div class="container-sm column mr-auto ml-auto mb-auto"> 
+                <div class="text-center" style="color:white">
                     <h2>{{ mortality_rate }}%</h2>
-                    <span>Mortality rate</span>
+                    <span >Mortality rate</span>
                 </div>
             </div>
         </div>
@@ -118,7 +124,7 @@
                 $(dropdown).find('.dropdown-toggle').dropdown('toggle');
             })
         });
-
+        var value = JSON.parse(document.getElementById('infect-data').textContent);
         var margin = {top: 10, right: 30, bottom: 30, left: 60},
         width = 460 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
@@ -130,7 +136,11 @@
         .append("g")
         .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
+        d3.json(value).then(function(data) {
+            console.log(data[0]);
+        });
     </script>
+
 
 </body>
 </html>
