@@ -7,13 +7,8 @@ class Date(models.Model):
     confirmed = models.IntegerField("confirmed_cases")
     deaths = models.IntegerField("deaths")
     recovered = models.IntegerField("recovered_cases")
+    country = models.CharField(max_length=200) 
 
     def __str__(self):
-        return str(self.date)
+        return str(self.date) + ": in: "+ self.country+": confirmed: "+ str(self.confirmed)+ ", deaths: "+ str(self.deaths)+", recovered: "+ str(self.recovered)
 
-class Country(models.Model):
-    name = models.CharField(max_length=200)
-    date = models.ForeignKey(Date, on_delete=models.CASCADE) 
-
-    def __str__(self):
-        return self.name
