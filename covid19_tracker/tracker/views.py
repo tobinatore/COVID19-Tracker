@@ -11,6 +11,16 @@ from .models import Date
 curr_dir = os.getcwd()
 
 
+
+def get_latest_data():
+    data = Date.objects.filter(date=datetime.date.today()).order_by("-confirmed")
+    if len(data) == 0:
+        data = Date.objects.filter(date=datetime.date.today() - datetime.timedelta(days = 1)).order_by("-confirmed")
+    
+    return data
+
+
+
 def init_db(my_api):
     data = my_api.get_all()
     c = 1
@@ -31,22 +41,20 @@ def update_db(my_api):
    pass
 
 
-def sum_cases():
-    data = Date.objects.filter(date=datetime.date.today())
-    if len(data) == 0:
-        data = Date.objects.filter(date=datetime.date.today() - datetime.timedelta(days = 1))
-
-    print(len(data))
-    inf = 0
-    deaths = 0
-    reco = 0
-    for date in data:
-        inf += date.confirmed
-        deaths += date.deaths
-        reco += date.recovered
-    
-    return inf, deaths, reco
-    
+def sum_cases(my_api):
+    #data = get_latest_data()
+#
+    #print(len(data))
+    #inf = 0
+    #deaths = 0
+    #reco = 0
+    #for date in data:
+        #inf += date.confirmed
+        #deaths += date.deaths
+        #reco += date.recovered
+#    
+    #return inf, deaths, reco
+    return my_api.get_current_number()    
 
 def index(request):
    
@@ -59,6 +67,6 @@ def index(request):
         update_db(my_api)
 
     countries = len(set(Date.objects.all().values_list('country', flat=True)))
-    infected, deaths, recovered = sum_cases()
+    infected, deaths, recovered = sum_cases(my_api)
     mortality = (deaths/infected)*100
-    return render(request,"index.html",{"infected":infected, "countries":countries, "deaths":deaths, "recovered":recovered, "mortality_rate":round(mortality,2)})
+    return render(request,"index.html",{"infected":infected, "countries":countries, "deaths":deaths, "recovered":recovered, "mortality_rate":round(mortality,2), "all":get_latest_data()})

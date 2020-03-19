@@ -1,4 +1,5 @@
 import requests
+from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
 import json
@@ -8,6 +9,16 @@ class API:
     
     def __init__(self):    
         self.dirpath = os.getcwd()
+
+    def get_current_number(self):
+        url="https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0"
+        req = requests.get(url)
+        soup = BeautifulSoup(req.text, 'html.parser')
+        table = soup.findAll('td',class_="s4")
+        total = table[0].text.replace(",","")
+        deaths = table[1].text.replace(",","")
+        recov = soup.findAll('td',class_="s5")[0].text.replace(",","")
+        return int(total), int(deaths), int(recov)
 
 
     def get_all(self):
@@ -62,15 +73,12 @@ class API:
             data_rec = recov.loc[index]
             
             if not row[1] in data_dict:
-                self.countries += 1
                 data_dict[row[1]] = {}
-                print(str(self.countries) + ": " + row[1])
                 for x in range(0, len(cols)):
                     data_dict[row[1]][cols[x]] = [row[cols[x]], data_rec[cols[x]], data_deaths[cols[x]]]
             elif row[0] in ['French Guiana', 'Guadeloupe', 'Guam', 'Mayotte', 'occupied Palestinian territory', 'Puerto Rico', 'Reunion']:
                 # the states in the list above are listed as territories in the .csv's, however they are countries at the same time,
                 # so we'll need to make an exception
-                self.countries += 1
                 data_dict[row[0]] = {}
                 for x in range(0, len(cols)):
                     data_dict[row[0]][cols[x]] = [row[cols[x]], data_rec[cols[x]], data_deaths[cols[x]]]
@@ -86,4 +94,4 @@ class API:
 if __name__=="__main__":
     # For debugging purposes you can run the api.py script ob its own
     api = API()
-    api.get_all()
+    api.get_current_number()
