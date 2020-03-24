@@ -1,5 +1,5 @@
 from django.template.defaultfilters import date as django_date_filter
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from . import api
 import os
@@ -19,6 +19,9 @@ def get_latest_data():
         
     return data
 
+
+def get_all_data():
+    return Date.objects.all()
 
 
 def init_db(my_api):
@@ -110,4 +113,12 @@ def index(request):
     mortality = (deaths/infected)*100
     return render(request,"index.html",{"infected":infected, "countries":countries, \
         "deaths":deaths, "recovered":recovered, "mortality_rate":round(mortality,2), \
-        "all":get_latest_data(), "js":js})
+        "latest":get_latest_data(), "js":js})
+
+
+def get_country(request):
+    country = request.GET.get('country', None)
+    data = {
+        country:list(Date.objects.filter(country=country).order_by("date").values("date", "confirmed", "deaths", "recovered"))
+    }
+    return JsonResponse(data, safe=False)
