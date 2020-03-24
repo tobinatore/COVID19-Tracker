@@ -10,14 +10,16 @@ class API:
     def __init__(self):    
         self.dirpath = os.getcwd()
 
+
     def get_current_number(self):
-        url="https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0"
+        url="https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0&range=A1:I193"
         req = requests.get(url)
         soup = BeautifulSoup(req.text, 'html.parser')
-        total = soup.findAll('td',class_="s42")[0].text.replace(",","")
-        deaths = soup.findAll('td',class_="s44")[0].text.replace(",","")
-        recov = soup.findAll('td',class_="s47")[0].text.replace(",","")
+        total = soup.findAll('td',class_="s6")[0].text.replace(",","")
+        deaths = soup.findAll('td',class_="s6")[1].text.replace(",","")
+        recov = soup.findAll('td',class_="s7")[0].text.replace(",","")
         return int(total), int(deaths), int(recov)
+
 
     def get_latest(self):
         url_confirmed = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
@@ -40,7 +42,6 @@ class API:
         inf = 0
         d = 0
         rec = 0 
-        print(cols)
 
         # Building the dict
         for index, row in conf.iterrows():
@@ -77,6 +78,7 @@ class API:
         
         return self.countries_dict
 
+
     def get_infected_countries(self, url_confirmed, url_deaths, url_recovered):
         """ Queries the Johns Hopkins CSSE's repository for all infected countries 
             and builds a dict with confirmed cases, deaths and recoveries for every
@@ -110,23 +112,23 @@ class API:
 
         # Building the dict
         for index, row in conf.iterrows():
+
             data_deaths = deaths.iloc[index]
             data_rec = recov.loc[index]
             
-            if not row[1] in data_dict:
+            if not row[1] in data_dict and row[1] != "US":
                 data_dict[row[1]] = {}
                 for x in range(0, len(cols)):
                     data_dict[row[1]][cols[x]] = [row[cols[x]], data_rec[cols[x]], data_deaths[cols[x]]]
-            elif row[0] in ['French Guiana', 'Guadeloupe', 'Guam', 'Mayotte', 'occupied Palestinian territory', 'Puerto Rico', 'Reunion']:
+            elif row[0] in ['French Guiana', 'Guadeloupe', 'Guam', 'Mayotte', 'occupied Palestinian territory', 'Puerto Rico', 'Reunion', 'US']:
                 # the states in the list above are listed as territories in the .csv's, however they are countries at the same time,
                 # so we'll need to make an exception
                 data_dict[row[0]] = {}
                 for x in range(0, len(cols)):
                     data_dict[row[0]][cols[x]] = [row[cols[x]], data_rec[cols[x]], data_deaths[cols[x]]]
-            else:
+            elif row[1] != "US":
                 for x in range(0, len(cols)):
                     data_dict[row[1]][cols[x]] = [x + y for x, y in zip(data_dict[row[1]][cols[x]], [row[cols[x]], data_rec[cols[x]], data_deaths[cols[x]]])]
-     
         return data_dict
 
             
@@ -135,4 +137,4 @@ class API:
 if __name__=="__main__":
     # For debugging purposes you can run the api.py script ob its own
     api = API()
-    api.get_current_number()
+    api.get_all()

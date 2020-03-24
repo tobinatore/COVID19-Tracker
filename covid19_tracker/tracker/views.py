@@ -16,7 +16,7 @@ def get_latest_data():
     data = Date.objects.filter(date=datetime.date.today()).order_by("-confirmed")
     if len(data) == 0:
         data = Date.objects.filter(date=datetime.date.today() - datetime.timedelta(days = 1)).order_by("-confirmed")
-    
+        
     return data
 
 
@@ -25,7 +25,7 @@ def init_db(my_api):
     data = my_api.get_all()
     c = 1
     for country in data:
-        print(str(c)+"/159", end='\r', flush=True)
+        print(str(c)+"\\"+str(len(data)), end='\r', flush=True)
         for date in data[country]:
             conf = data[country][date][0]
             deaths = data[country][date][2]
@@ -40,7 +40,7 @@ def update_db(my_api):
     c = 1
     data = my_api.get_latest()
     for country in data:
-        print(str(c)+"/159", end='\r', flush=True)
+        print(str(c)+"\\"+str(len(data)), end='\r', flush=True)
         for date in data[country]:
             conf = data[country][date][0]
             deaths = data[country][date][2]
@@ -84,8 +84,6 @@ def build_js(dates, conf_sum, death_sum, reco_sum):
     string += "let death_sum = " + str(death_sum)+";"
     string += "let reco_sum = " + str(reco_sum)+";"
     string += "</script>"
-
-    print(string)
 
     return string
 

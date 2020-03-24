@@ -134,45 +134,45 @@
 
             return new_object
         }
-
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: '# of confirmed cases',
-                    data: conf_sum,
-                    borderColor: 'rgba(255, 190, 0, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: '# of deaths',
-                    data: death_sum,
-                    borderColor: 'rgba(255, 0, 0, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: '# of recoveries',
-                    data: reco_sum,
-                    borderColor: 'rgba(0, 255, 0, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-        });
         
         $(document).ready(function() {
             data = $("#data-table").tableToJSON();
             data = transformJSON(data);
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: '# of confirmed cases',
+                        data: conf_sum,
+                        borderColor: 'rgba(255, 190, 0, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '# of deaths',
+                        data: death_sum,
+                        borderColor: 'rgba(255, 0, 0, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '# of recoveries',
+                        data: reco_sum,
+                        borderColor: 'rgba(0, 255, 0, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
 
             $('#map').vectorMap({
                 map: 'world_mill',
@@ -189,6 +189,10 @@
                     label.html(label.html() +' (' + code.toString() + 
                     ') <br>Confirmed: ' + data[code]);
                 }
+            });
+
+            $("#data-table tr").click(function(){
+                
             });
         });
 

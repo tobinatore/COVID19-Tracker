@@ -4,4 +4,6 @@ register = template.Library()
 
 @register.filter
 def percentage(value, arg):
-    return round((arg/value)*100,2)
+    if arg != 0:
+        return round((arg/value)*100,2)
+    else: return 0
