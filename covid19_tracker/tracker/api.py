@@ -60,7 +60,13 @@ class API:
 
     
     def get_live(self):
-        url="https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0&range=A7:I197"
+        """
+         Gets number of infections, deaths, recovered patients, active cases, serious cases, mortality, new cases and new deaths for every country.
+
+        Returns:
+            (List<Data_Object>) A list of objects which contain the information 
+        """
+        url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0&range=A7:I197"
         req = requests.get(url)
         soup = BeautifulSoup(req.text, 'html.parser')
         trs = soup.findAll("tr")[1:]
@@ -69,6 +75,8 @@ class API:
         for tr in trs:
             tds = tr.findAll("td")[:-1] # the last td contains the source link
             data_list.append(Data_Object(tds[0].text, tds[1].text.replace(",",""), tds[2].text.replace(",",""), tds[3].text.replace(",",""), tds[4].text.replace(",",""), tds[6].text.replace(",",""), tds[7].text.replace(",","")))
+        inf, deaths, rec = self.get_current_number()
+        data_list.append(Data_Object("Global", inf, 0, deaths, 0, 0, rec))
 
         return data_list
 
@@ -117,7 +125,7 @@ class API:
 
     def get_all(self):
         """
-        Gets number of infections, deaths and recovered patients for every country.
+        Gets timeseries of infections, deaths and recovered patients for every country.
 
         Returns:
             (Dict) A dict: {"country":"{"date":[cases, recoveries, deaths]}, ...}"

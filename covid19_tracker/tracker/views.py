@@ -5,11 +5,32 @@ from . import api
 import os
 import json
 import datetime
-from .models import Date
+from .models import Date, Live
 
 
 curr_dir = os.getcwd()
 
+
+def fetch_live(my_api):
+    data = my_api.get_live()
+
+    for country in data:
+        live = Live(time=datetime.datetime.now()+datetime.timedelta(hours=1), confirmed=country.confirmed, deaths=country.deaths, \
+                active=country.active, new_cases=country.new_cases, new_deaths=country.new_deaths, country=country.country,\
+                serious=country.serious, mortality=country.mortality, recovered=country.recovered)
+        live.save()
+
+
+def update_live(my_api):
+    data = Live.objects.all()
+    data.delete()
+
+    data_new = my_api.get_live()
+    for country in data:
+        live = Live(time=datetime.datetime.now().strftime("%H:%M:%S"), confirmed=country.confirmed, deaths=country.deaths, \
+                active=country.active, new_cases=country.new_cases, new_deaths=country.new_deaths, country=country.country,\
+                serious=country.serious, mortality=country.mortality, recovered=country.recovered)
+        live.save()
 
 
 def get_latest_data():
@@ -103,18 +124,31 @@ def index(request):
     elif len(Date.objects.filter(date=datetime.date.today() - datetime.timedelta(days = 1)).order_by("-confirmed")) == 0:
         update_db(my_api)
     
+    if Live.objects.count() == 0:
+        fetch_live(my_api)
+    elif Live.objects.filter(country="Global")[0].time < datetime.datetime.now().time():
+        update_live(my_api)
 
     ret = sum_cases()
     dates, conf_sum, death_sum, reco_sum = ret[0], ret[1], ret[2], ret[3]
     dates = [date.strftime('%d/%m/%y') for date in dates]
+    
     js = build_js(dates, conf_sum, death_sum, reco_sum)
+    
     country_list = sorted(set(Date.objects.all().values_list('country', flat=True)))
     countries = len(country_list)
-    infected, deaths, recovered = curr_cases(my_api)
-    mortality = (deaths/infected)*100
-    return render(request,"index.html",{"infected":infected, "countries":countries, \
-        "deaths":deaths, "recovered":recovered, "mortality_rate":round(mortality,2), \
-        "latest":my_api.get_live(), "js":js, "country_list":country_list})
+    
+    global_ = Live.objects.filter(country="Global")
+    confirmed = global_[0].confirmed
+    deaths = global_[0].deaths
+    reco = global_[0].recovered
+    mortality = (deaths/confirmed)*100
+
+    print()
+    
+    return render(request,"index.html",{"infected":confirmed, "countries":countries, \
+        "deaths":deaths, "recovered":reco, "mortality_rate":round(mortality,2), \
+        "latest":Live.objects.all().order_by("-confirmed"), "js":js, "country_list":country_list})
 
 
 def get_country(request):

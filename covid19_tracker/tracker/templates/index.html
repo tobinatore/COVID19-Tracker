@@ -50,7 +50,7 @@
             </div>
             <div class="container-sm column mr-auto ml-auto mb-auto">
                 <div class="text-center" style="color:white">
-                    <h2 style="color:orange" id="active">{% active infected deaths recovered %}</h2>
+                    <h2 style="color:orange" id="active"></h2>
                     <span class="text-center">Active cases</span>
                 </div>
             </div>
@@ -257,7 +257,7 @@
 
                 if (nc > 0) {
                     $(td).text("⬆ "+ nc);
-                    $(td).addClass("text-danger");
+                    $(td).addClass("text-warning");
                 } else {
                     $(td).text("⬅ 0");
                     $(td).addClass("text-success");
@@ -270,7 +270,7 @@
 
                 if (nc > 0) {
                     $(td).text("⬆ "+ nc);
-                    $(td).addClass("text-danger");
+                    $(td).addClass("text-warning");
                 } else {
                     $(td).text("⬅ 0");
                     $(td).addClass("text-success");
@@ -314,12 +314,12 @@
                             };*/
                             myChart.data.labels = dt_cntr;
                             myChart.update();
-                            console.log("#"+newCountry.replace(/\s+/g, '-')+"-confirmed")
-                            var conf = $("#"+newCountry.replace(/\s+/g, '-')+"-confirmed").text();
-                            var death = $("#"+newCountry.replace(/\s+/g, '-')+"-deaths").text();
-                            var rec = $("#"+newCountry.replace(/\s+/g, '-')+"-recovered").text();
-                            var active = $("#"+newCountry.replace(/\s+/g, '-')+"-active").text();
-                            var mort = $("#"+newCountry.replace(/\s+/g, '-')+"-mortality").text();
+                            console.log("#"+newCountry+"-confirmed")
+                            var conf = $("#"+newCountry+"-confirmed").text();
+                            var death = $("#"+newCountry+"-deaths").text();
+                            var rec = $("#"+newCountry+"-recovered").text();
+                            var active = $("#"+newCountry+"-active").text();
+                            var mort = $("#"+newCountry+"-mortality").text();
                             $("#confirmed").text(conf);
                             $("#deaths").text(death);
                             $("#recovered").text(rec);
@@ -332,7 +332,7 @@
                     });
                 }
                 else{
-                    $("#"+newCountry.replace(/\s+/g, '-')).removeClass('bg-danger')
+                    $("#"+newCountry).removeClass('bg-danger');
                     myChart.data.datasets[0] = {
                         label: '# of confirmed cases',
                         data: conf_sum,
@@ -359,7 +359,7 @@
                     $("#deaths").text("{{ deaths}}");
                     $("#recovered").text("{{ recovered }}");
                     $("#mort").text("{{ mortality_rate }}%")
-                    $("#active").text("{% active infected deaths recovered %}");
+                    $("#active").text("");
                 }
         }
     </script>
