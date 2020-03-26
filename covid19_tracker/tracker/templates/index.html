@@ -50,7 +50,7 @@
             </div>
             <div class="container-sm column mr-auto ml-auto mb-auto">
                 <div class="text-center" style="color:white">
-                    <h2 style="color:orange" id="active"></h2>
+                    <h2 style="color:orange" id="active">{% active infected deaths recovered %}</h2>
                     <span class="text-center">Active cases</span>
                 </div>
             </div>
@@ -284,7 +284,9 @@
 
         function selectCountry(newCountry, myChart){
             if(newCountry != country){
+
                     $("#"+newCountry).addClass('bg-danger').siblings().removeClass('bg-danger');
+                    $("selectpicker [value="+newCountry+"]").attr("selected","selected");
                     var ctry = check_country($("#"+newCountry+"-country").text());
                     $.ajax({
                         url: '/tracker/ajax/get_country/',
@@ -333,6 +335,7 @@
                 }
                 else{
                     $("#"+newCountry).removeClass('bg-danger');
+                    $("selectpicker [value=Global]").attr("selected","selected");
                     myChart.data.datasets[0] = {
                         label: '# of confirmed cases',
                         data: conf_sum,
@@ -359,7 +362,7 @@
                     $("#deaths").text("{{ deaths}}");
                     $("#recovered").text("{{ recovered }}");
                     $("#mort").text("{{ mortality_rate }}%")
-                    $("#active").text("");
+                    $("#active").text("{% active infected deaths recovered %}");
                 }
         }
     </script>
