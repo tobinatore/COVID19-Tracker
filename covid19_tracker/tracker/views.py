@@ -31,10 +31,10 @@ def init_db(my_api):
         print(str(c)+"\\"+str(len(data)), end='\r', flush=True)
         for date in data[country]:
             conf = data[country][date][0]
-            deaths = data[country][date][2]
-            recov = data[country][date][1]            
+            deaths = data[country][date][1]
+            #recov = data[country][date][1]            
             date = datetime.datetime.strptime(date, '%m/%d/%y')
-            d = Date(date=date, confirmed=conf, deaths=deaths, recovered=recov, country=country)
+            d = Date(date=date, confirmed=conf, deaths=deaths, recovered=0, country=country)
             d.save()
         c+=1
 
@@ -46,10 +46,10 @@ def update_db(my_api):
         print(str(c)+"\\"+str(len(data)), end='\r', flush=True)
         for date in data[country]:
             conf = data[country][date][0]
-            deaths = data[country][date][2]
-            recov = data[country][date][1]            
+            deaths = data[country][date][1]
+            #recov = data[country][date][1]            
             date = datetime.datetime.strptime(date, '%m/%d/%y')
-            d = Date(date=date, confirmed=conf, deaths=deaths, recovered=recov, country=country)
+            d = Date(date=date, confirmed=conf, deaths=deaths, recovered=0, country=country)
             d.save()
         c+=1
 
@@ -74,7 +74,7 @@ def sum_cases():
         if i % 2 == 0:
             conf_sum.append(inf)
             death_sum.append(deaths)
-            reco_sum.append(reco)
+            reco_sum.append(0)
         i+=1
 
     return dates[::2], conf_sum, death_sum, reco_sum
@@ -108,16 +108,17 @@ def index(request):
     dates, conf_sum, death_sum, reco_sum = ret[0], ret[1], ret[2], ret[3]
     dates = [date.strftime('%d/%m/%y') for date in dates]
     js = build_js(dates, conf_sum, death_sum, reco_sum)
-    countries = len(set(Date.objects.all().values_list('country', flat=True)))
+    country_list = sorted(set(Date.objects.all().values_list('country', flat=True)))
+    countries = len(country_list)
     infected, deaths, recovered = curr_cases(my_api)
     mortality = (deaths/infected)*100
     return render(request,"index.html",{"infected":infected, "countries":countries, \
         "deaths":deaths, "recovered":recovered, "mortality_rate":round(mortality,2), \
-        "latest":get_latest_data(), "js":js})
+        "latest":my_api.get_live(), "js":js, "country_list":country_list})
 
 
 def get_country(request):
-    country = request.GET.get('country', None)
+    country = request.GET.get('country', None)    
     data = {
         country:list(Date.objects.filter(country=country).order_by("date").values("date", "confirmed", "deaths", "recovered"))
     }
