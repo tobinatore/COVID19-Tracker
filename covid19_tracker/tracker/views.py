@@ -40,7 +40,7 @@ def update_live(my_api):
     data.delete()
 
     data_new = my_api.get_live()
-    for country in data:
+    for country in data_new:
         live = Live(time=datetime.datetime.now().strftime("%H:%M:%S"), confirmed=country.confirmed, deaths=country.deaths, \
                 active=country.active, new_cases=country.new_cases, new_deaths=country.new_deaths, country=country.country,\
                 serious=country.serious, mortality=country.mortality, recovered=country.recovered)
@@ -172,7 +172,7 @@ def index(request):
     if Live.objects.count() == 0:
         # no data for the "live" count -> get it from BNO
         fetch_live(my_api)
-    elif Live.objects.filter(country="Global")[0].time < datetime.datetime.now().time():
+    elif Live.objects.filter(country="Global")[0].time < datetime.datetime.now().time() or not Live.objects.filter(country="Global"):
         # update the live count every hour
         update_live(my_api)
 
@@ -187,10 +187,10 @@ def index(request):
     countries = len(country_list)
     
     # Getting global data for the index
-    global_ = Live.objects.filter(country="Global")
-    confirmed = global_[0].confirmed
-    deaths = global_[0].deaths
-    reco = global_[0].recovered
+    global_ = Live.objects.get(country="Global")
+    confirmed = global_.confirmed
+    deaths = global_.deaths
+    reco = global_.recovered
     mortality = (deaths/confirmed)*100
     
     # Render index.html
