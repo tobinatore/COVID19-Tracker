@@ -50,6 +50,14 @@ class API:
 
 
     def get_current_number(self):
+        """
+        Scrapes the latest number of confirmed cases, deaths and recoveries from BNO's spreadsheet and returns them as ints
+
+        Returns:
+            (int) total - total confirmed cases
+            (int) deaths - total deaths
+            (int) recovered - total recovered patients
+        """
         url="https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0&range=A4:G4"
         req = requests.get(url)
         soup = BeautifulSoup(req.text, 'html.parser')
@@ -82,6 +90,12 @@ class API:
 
 
     def get_latest(self):
+        """
+        Gets yesterday's confirmed cases and deaths from the JHU repository
+
+        Parameters:
+            (Dict) data_dict - {"country":"{"date":[cases, deaths]}, ...}"
+        """
         url_confirmed = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
         url_deaths = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
         #url_recovered = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
@@ -128,7 +142,7 @@ class API:
         Gets timeseries of infections, deaths and recovered patients for every country.
 
         Returns:
-            (Dict) A dict: {"country":"{"date":[cases, recoveries, deaths]}, ...}"
+            (Dict) A dict: {"country":"{"date":[cases, deaths]}, ...}"
         """
         url_confirmed = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
         url_deaths = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"

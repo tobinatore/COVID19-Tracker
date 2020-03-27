@@ -12,6 +12,13 @@ curr_dir = os.getcwd()
 
 
 def fetch_live(my_api):
+    """
+    Initializes the table containing the live data of confirmed cases, deaths, recoveries, etc.
+    Adds all available data.
+
+    Parameters:
+        (API()) my_api - API object for querying BNO and JHU
+    """
     data = my_api.get_live()
 
     for country in data:
@@ -22,6 +29,13 @@ def fetch_live(my_api):
 
 
 def update_live(my_api):
+    """
+    Updates the table containing the live data of confirmed cases, deaths, recoveries, etc.
+    Adds the latest data.
+
+    Parameters:
+        (API()) my_api - API object for querying BNO and JHU
+    """
     data = Live.objects.all()
     data.delete()
 
@@ -46,6 +60,10 @@ def get_all_data():
 
 
 def init_db(my_api):
+    """
+    Initializes the table containing the timeseries of confirmed cases and deaths.
+    Adds all available data.
+    """
     data = my_api.get_all()
     c = 1
     for country in data:
@@ -61,6 +79,10 @@ def init_db(my_api):
 
 
 def update_db(my_api):
+    """
+    Updates the table containing the timeseries of confirmed cases and deaths.
+    Adds the latest data.
+    """
     c = 1
     data = my_api.get_latest()
     for country in data:
@@ -76,6 +98,16 @@ def update_db(my_api):
 
 
 def sum_cases():
+    """
+    Builds the data structures for the chart on the front page.
+
+    Returns:
+        (List) dates - Every second date
+        (List) conf_sum - confirmed cases for every 2nd day
+        (List) death_sum - confirmed deaths for every 2nd day
+        (List) reco_sum - confirmed recoveries for every 2nd day
+
+    """
     dates = sorted(set(Date.objects.all().values_list('date', flat=True)))
     conf_sum = []
     death_sum = []
@@ -102,6 +134,12 @@ def sum_cases():
 
 
 def build_js(dates, conf_sum, death_sum, reco_sum):
+    """
+    Builds js code for use on the front page
+    
+    Returns
+        (String) - The finished code block
+    """
     string = "<script> "
     string += "let dates = " + str(dates)+";"
     string += "let conf_sum = " + str(conf_sum)+";"
@@ -115,43 +153,61 @@ def curr_cases(my_api):
     return my_api.get_current_number()    
    
 def index(request):
-    sum_cases()
+    """
+    Function for serving the index.
+
+    Returns:
+        All the data we need for the index page
+    """
+
     my_api = api.API()
 
     if Date.objects.count() == 0:
-        print("init")
+        # Database is empty -> we need to request all the data
         init_db(my_api)
     elif len(Date.objects.filter(date=datetime.date.today() - datetime.timedelta(days = 1)).order_by("-confirmed")) == 0:
+        # Database isn't empty, but there are no records for yesterday -> we need to get the data for yesterday
         update_db(my_api)
     
     if Live.objects.count() == 0:
+        # no data for the "live" count -> get it from BNO
         fetch_live(my_api)
     elif Live.objects.filter(country="Global")[0].time < datetime.datetime.now().time():
+        # update the live count every hour
         update_live(my_api)
 
+    # Building the arrays for the map and the chart on the front page
     ret = sum_cases()
     dates, conf_sum, death_sum, reco_sum = ret[0], ret[1], ret[2], ret[3]
     dates = [date.strftime('%d/%m/%y') for date in dates]
-    
     js = build_js(dates, conf_sum, death_sum, reco_sum)
     
+    # Building the list of countries for the dropdown menu
     country_list = sorted(set(Date.objects.all().values_list('country', flat=True)))
     countries = len(country_list)
     
+    # Getting global data for the index
     global_ = Live.objects.filter(country="Global")
     confirmed = global_[0].confirmed
     deaths = global_[0].deaths
     reco = global_[0].recovered
     mortality = (deaths/confirmed)*100
-
-    print()
     
+    # Render index.html
     return render(request,"index.html",{"infected":confirmed, "countries":countries, \
         "deaths":deaths, "recovered":reco, "mortality_rate":round(mortality,2), \
         "latest":Live.objects.all().order_by("-confirmed")[1:], "js":js, "country_list":country_list})
 
 
 def get_country(request):
+    """
+    Returns the timeseries of confirmed cases and deaths of the requested country.
+    Parma:
+        request: GET-request made by the frontend
+
+    Returns:
+        JsonResponse - An array of dates with confirmed cases and deaths
+    """
     country = request.GET.get('country', None)    
     data = {
         country:list(Date.objects.filter(country=country).order_by("date").values("date", "confirmed", "deaths", "recovered"))
