@@ -40,7 +40,7 @@ class Data_Object:
 
 
     def __str__(self):
-        return self.country+": Confirmed: "+ self.confirmed +", Deaths: "+ self.deaths+", Recovered: "+ self.recovered
+        return str(self.country)+": Confirmed: "+ str(self.confirmed) +", Deaths: "+ str(self.deaths)+", Recovered: "+ str(self.recovered)
 
 
 class API:
@@ -84,7 +84,8 @@ class API:
             tds = tr.findAll("td")[:-1] # the last td contains the source link
             data_list.append(Data_Object(tds[0].text, tds[1].text.replace(",",""), tds[2].text.replace(",",""), tds[3].text.replace(",",""), tds[4].text.replace(",",""), tds[6].text.replace(",",""), tds[7].text.replace(",","")))
         inf, deaths, rec = self.get_current_number()
-        data_list.append(Data_Object("Global", inf, 0, deaths, 0, 0, rec))
+        global_ = Data_Object("Global", inf, 0, deaths, 0, 0, rec)
+        data_list.append(global_)
 
         return data_list
 

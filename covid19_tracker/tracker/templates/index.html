@@ -22,7 +22,7 @@
             <select class="selectpicker" data-live-search="true">
                 <option>Global</option>
                 {% for country in country_list %}
-                <option value="{{ country }}">{{ country }}</option>
+                <option value="{{ country|fix_id }}">{{ country }}</option>
                 {% endfor %}
             </select>
         </div>  
