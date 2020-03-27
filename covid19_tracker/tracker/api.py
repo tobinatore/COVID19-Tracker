@@ -82,9 +82,9 @@ class API:
 
 
     def get_latest(self):
-        url_confirmed = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
-        url_deaths = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv"
-        url_recovered = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
+        url_confirmed = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+        url_deaths = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
+        #url_recovered = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
 
         data_dict = {}
         prov_dict = {}
@@ -110,14 +110,14 @@ class API:
             
             if not row[1] in data_dict:
                 data_dict[row[1]] = {}
-                data_dict[row[1]][cols[0]] = [row[cols[0]], data_deaths[cols[x]]]# data_rec[cols[0]], data_deaths[cols[0]]]
+                data_dict[row[1]][cols[0]] = [row[cols[0]], data_deaths[cols[0]]]# data_rec[cols[0]], data_deaths[cols[0]]]
             elif row[0] in ['French Guiana', 'Guadeloupe', 'Guam', 'Mayotte', 'occupied Palestinian territory', 'Puerto Rico', 'Reunion']:
                 # the states in the list above are listed as territories in the .csv's, however they are countries at the same time,
                 # so we'll need to make an exception
                 data_dict[row[0]] = {}
-                data_dict[row[0]][cols[0]] = [row[cols[0]], data_deaths[cols[x]]]# data_rec[cols[0]], data_deaths[cols[0]]]
+                data_dict[row[0]][cols[0]] = [row[cols[0]], data_deaths[cols[0]]]# data_rec[cols[0]], data_deaths[cols[0]]]
             else:
-                data_dict[row[1]][cols[0]] = [x + y for x, y in zip(data_dict[row[1]][cols[0]], [row[cols[0]], data_deaths[cols[x]]])]# data_rec[cols[0]], data_deaths[cols[0]]])]
+                data_dict[row[1]][cols[0]] = [x + y for x, y in zip(data_dict[row[1]][cols[0]], [row[cols[0]], data_deaths[cols[0]]])]# data_rec[cols[0]], data_deaths[cols[0]]])]
      
         return data_dict
 
