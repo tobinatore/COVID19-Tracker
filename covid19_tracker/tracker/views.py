@@ -183,7 +183,7 @@ def index(request):
     js = build_js(dates, conf_sum, death_sum, reco_sum)
     
     # Building the list of countries for the dropdown menu
-    country_list = sorted(set(Date.objects.all().values_list('country', flat=True)))
+    country_list = sorted(set(Live.objects.all().values_list('country', flat=True)))
     countries = len(country_list)
     
     # Getting global data for the index
