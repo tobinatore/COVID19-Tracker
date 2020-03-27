@@ -42,9 +42,8 @@ except ImportError:
         print("Could not create secret key! Do you have permission to create files in the following directory: ")
         print(SETTINGS_DIR)
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
