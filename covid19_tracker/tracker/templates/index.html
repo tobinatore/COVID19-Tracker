@@ -297,7 +297,8 @@
 		 if(newCountry != country){
 
                     $("#"+newCountry).addClass('bg-danger').siblings().removeClass('bg-danger');
-                    $("selectpicker [value="+newCountry+"]").attr("selected","selected");
+                    $('.selectpicker').val(newCountry);
+                    $('.selectpicker').selectpicker('render');
                     var ctry = check_country($("#"+newCountry+"-country").text());
                     $.ajax({
                         url: '/ajax/get_country/',
@@ -346,7 +347,8 @@
                 }
                 else{
                     $("#"+newCountry).removeClass('bg-danger');
-                    $("selectpicker [value=Global]").attr("selected","selected");
+                    $(".selectpicker").val("Global");
+                    $('.selectpicker').selectpicker('render');
                     myChart.data.datasets[0] = {
                         label: '# of confirmed cases',
                         data: conf_sum,

@@ -196,7 +196,7 @@ def index(request):
     # Render index.html
     return render(request,"index.html",{"infected":confirmed, "countries":countries, \
         "deaths":deaths, "recovered":reco, "mortality_rate":round(mortality,2), \
-        "latest":Live.objects.all().order_by("-confirmed")[1:], "js":js, "country_list":country_list})
+        "latest":Live.objects.all().order_by("-confirmed"), "js":js, "country_list":country_list})
 
 
 def get_country(request):
