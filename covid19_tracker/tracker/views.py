@@ -41,7 +41,7 @@ def update_live(my_api):
 
     data_new = my_api.get_live()
     for country in data_new:
-        live = Live(time=datetime.datetime.now().strftime("%H:%M:%S"), confirmed=country.confirmed, deaths=country.deaths, \
+        live = Live(time=datetime.datetime.now()+datetime.timedelta(hours=1), confirmed=country.confirmed, deaths=country.deaths, \
                 active=country.active, new_cases=country.new_cases, new_deaths=country.new_deaths, country=country.country,\
                 serious=country.serious, mortality=country.mortality, recovered=country.recovered)
         live.save()
