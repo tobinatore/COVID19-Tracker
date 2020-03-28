@@ -165,7 +165,7 @@ def index(request):
     if Date.objects.count() == 0:
         # Database is empty -> we need to request all the data
         init_db(my_api)
-    elif len(Date.objects.filter(date=datetime.date.today() - datetime.timedelta(days = 1)).order_by("-confirmed")) == 0:
+    elif len(Date.objects.filter(date=datetime.date.today() - datetime.timedelta(days = 1)).order_by("-confirmed")) == 0 and datetime.datetime.now().time() > datetime.time(1,0):
         # Database isn't empty, but there are no records for yesterday -> we need to get the data for yesterday
         update_db(my_api)
     
