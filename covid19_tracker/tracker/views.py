@@ -187,7 +187,7 @@ def index(request):
     countries = len(country_list)
     
     # Getting global data for the index
-    global_ = Live.objects.get(country="Global")
+    global_ = Live.objects.filter(country="Global")[0]
     confirmed = global_.confirmed
     deaths = global_.deaths
     reco = global_.recovered
