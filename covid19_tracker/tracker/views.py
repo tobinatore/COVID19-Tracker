@@ -172,7 +172,7 @@ def index(request):
     if Live.objects.count() == 0:
         # no data for the "live" count -> get it from BNO
         fetch_live(my_api)
-    elif Live.objects.filter(country="Global")[0].time < datetime.datetime.now().time() or not Live.objects.filter(country="Global"):
+    elif not Live.objects.filter(country="Global") or Live.objects.filter(country="Global")[0].time < datetime.datetime.now().time():
         # update the live count every hour
         update_live(my_api)
 
