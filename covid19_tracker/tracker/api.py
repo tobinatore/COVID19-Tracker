@@ -84,7 +84,29 @@ class API:
             tds = tr.findAll("td")[:-1] # the last td contains the source link
             data_list.append(Data_Object(tds[0].text, tds[1].text.replace(",",""), tds[2].text.replace(",",""), tds[3].text.replace(",",""), tds[4].text.replace(",",""), tds[6].text.replace(",",""), tds[7].text.replace(",","")))
         inf, deaths, rec = self.get_current_number()
-        global_ = Data_Object("Global", inf, 0, deaths, 0, 0, rec)
+
+
+        url_glob = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0&range=A201:I201"
+        req = requests.get(url_glob)
+        soup = BeautifulSoup(req.text, 'html.parser')
+        tr = soup.findAll("tr")[1:]
+
+        tds = tr[0].findAll("td") # the last td contains the source link
+        try:
+            n_c = tds[2].text.replace(",","")
+            n_d = tds[4].text.replace(",","")
+            ser = tds[6].text.replace(",","")
+        except Exception as e:
+            n_c = 0
+            n_d = 0
+            ser = 0
+
+        if n_c == "" or n_d == "" or ser == "":
+            n_c = 0
+            n_d = 0
+            ser = 0
+
+        global_ = Data_Object("Global", inf, n_c, deaths, n_d, ser, rec)
         data_list.append(global_)
 
         return data_list
