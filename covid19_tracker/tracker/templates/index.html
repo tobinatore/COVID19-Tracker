@@ -294,56 +294,78 @@
 
         function selectCountry(newCountry, myChart){
            if(newCountry != "header"){
-		 if(newCountry != country){
-
+		        if(newCountry != country){
                     $("#"+newCountry).addClass('bg-danger').siblings().removeClass('bg-danger');
                     $('.selectpicker').val(newCountry);
                     $('.selectpicker').selectpicker('render');
                     var ctry = check_country($("#"+newCountry+"-country").text());
-                    $.ajax({
-                        url: '/ajax/get_country/',
-                        data: {
-                            'country': ctry
-                        },
-                        dataType: 'json',
-                        success: function (data) {
-                            makeChartData(data[ctry]);
-                            myChart.data.datasets[0] = {
-                                label: '# of confirmed cases',
-                                data: cnf_cntr,
-                                borderColor: 'rgba(255, 190, 0, 1)',
-                                borderWidth: 1
-                            };
-                            myChart.data.datasets[1] = {
-                                label: '# of deaths',
-                                data: dth_cntr,
-                                borderColor: 'rgba(255, 0, 0, 1)',
-                                borderWidth: 1
-                            };
-                            /*myChart.data.datasets[2] = {
-                                label: '# of recoveries',
-                                data: rcvd_cntr,
-                                borderColor: 'rgba(0, 255, 0, 1)',
-                                borderWidth: 1
-                            };*/
-                            myChart.data.labels = dt_cntr;
-                            myChart.update();
-                            console.log("#"+newCountry+"-confirmed")
-                            var conf = $("#"+newCountry+"-confirmed").text();
-                            var death = $("#"+newCountry+"-deaths").text();
-                            var rec = $("#"+newCountry+"-recovered").text();
-                            var active = $("#"+newCountry+"-active").text();
-                            var mort = $("#"+newCountry+"-mortality").text();
-                            $("#confirmed").text(conf);
-                            $("#deaths").text(death);
-                            $("#recovered").text(rec);
-                            $("#active").text(active);
-                            $("#mort").text(mort);
-                            $("#country").text("Data ("+newCountry+"):");
-                            
-                            country = newCountry;
-                        }
-                    });
+                    if(ctry!="Global"){
+                        $.ajax({
+                            url: '/ajax/get_country/',
+                            data: {
+                                'country': ctry
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                                makeChartData(data[ctry]);
+                                myChart.data.datasets[0] = {
+                                    label: '# of confirmed cases',
+                                    data: cnf_cntr,
+                                    borderColor: 'rgba(255, 190, 0, 1)',
+                                    borderWidth: 1
+                                };
+                                myChart.data.datasets[1] = {
+                                    label: '# of deaths',
+                                    data: dth_cntr,
+                                    borderColor: 'rgba(255, 0, 0, 1)',
+                                    borderWidth: 1
+                                };
+                                /*myChart.data.datasets[2] = {
+                                    label: '# of recoveries',
+                                    data: rcvd_cntr,
+                                    borderColor: 'rgba(0, 255, 0, 1)',
+                                    borderWidth: 1
+                                };*/
+                                myChart.data.labels = dt_cntr;
+                                myChart.update();
+                            }                        
+                        });
+                    }else{
+                        myChart.data.datasets[0] = {
+                            label: '# of confirmed cases',
+                            data: conf_sum,
+                            borderColor: 'rgba(255, 190, 0, 1)',
+                            borderWidth: 1
+                        };
+                        myChart.data.datasets[1] = {
+                            label: '# of deaths',
+                            data: death_sum,
+                            borderColor: 'rgba(255, 0, 0, 1)',
+                            borderWidth: 1
+                        };
+                        myChart.data.datasets[2] = {
+                            label: '# of recoveries',
+                            data: reco_sum,
+                            borderColor: 'rgba(0, 255, 0, 1)',
+                            borderWidth: 1
+                        };
+                        myChart.data.labels = dates;
+                        myChart.update();
+                    }
+                    
+                    var conf = $("#"+newCountry+"-confirmed").text();
+                    var death = $("#"+newCountry+"-deaths").text();
+                    var rec = $("#"+newCountry+"-recovered").text();
+                    var active = $("#"+newCountry+"-active").text();
+                    var mort = $("#"+newCountry+"-mortality").text();
+                    $("#confirmed").text(conf);
+                    $("#deaths").text(death);
+                    $("#recovered").text(rec);
+                    $("#active").text(active);
+                    $("#mort").text(mort);
+                    $("#country").text("Data ("+newCountry+"):");    
+                    country = newCountry;
+                    
                 }
                 else{
                     $("#"+newCountry).removeClass('bg-danger');
@@ -377,7 +399,7 @@
                     $("#mort").text("{{ mortality_rate }}%")
                     $("#active").text("{% active infected deaths recovered %}");
                 }
-		}
+		    }
         }
     </script>
 
