@@ -134,6 +134,9 @@
         var dt_cntr = [];
         var country = "";
 
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+        }
 
         function check_country(country){
             countries = [{"BNO":"United States","JHU":"US"}, {"BNO":"South Korea","JHU":"Korea, South"}, {"BNO":"Czech Republic","JHU":"Czechia"}, {"BNO":"Bosnia","JHU":"Bosnia and Herzegovina"}, {"BNO":"Ivory Coast","JHU":"Cote d'Ivoire"}]
@@ -266,7 +269,7 @@
                 nc = parseInt($(td).text());
 
                 if (nc > 0) {
-                    $(td).text("⬆"+ nc);
+                    $(td).text("⬆"+ numberWithCommas(nc));
                     $(td).addClass("text-warning");
                 } else {
                     $(td).text("⬅0");
@@ -279,7 +282,7 @@
                 nc = parseInt($(td).text());
 
                 if (nc > 0) {
-                    $(td).text("⬆ "+ nc);
+                    $(td).text("⬆ "+ numberWithCommas(nc));
                     $(td).addClass("text-warning");
                 } else {
                     $(td).text("⬅ 0");
@@ -287,6 +290,36 @@
                 }
             });
             
+            confirmedTd = $("[id$='-confirmed'");
+            confirmedTd.each(function (i, td) {
+                nc = $(td).text();
+                $(td).text(numberWithCommas(nc));
+            });
+
+            deathsTd = $("[id$='-deaths'");
+            deathsTd.each(function (i, td) {
+                nc = $(td).text();
+                $(td).text(numberWithCommas(nc));
+            });
+
+            seriousTd = $("[id$='-serious'");
+            seriousTd.each(function (i, td) {
+                nc = $(td).text();
+                $(td).text(numberWithCommas(nc));
+            });
+
+            activeTd = $("[id$='-active'");
+            activeTd.each(function (i, td) {
+                nc = $(td).text();
+                $(td).text(numberWithCommas(nc));
+            });
+
+            recoveredTd = $("[id$='-recovered'");
+            recoveredTd.each(function (i, td) {
+                nc = $(td).text();
+                $(td).text(numberWithCommas(nc));
+            });
+
             $("#countries").text($('#data-table tr').length - 1);
 
         });
@@ -358,10 +391,10 @@
                     var rec = $("#"+newCountry+"-recovered").text();
                     var active = $("#"+newCountry+"-active").text();
                     var mort = $("#"+newCountry+"-mortality").text();
-                    $("#confirmed").text(conf);
-                    $("#deaths").text(death);
-                    $("#recovered").text(rec);
-                    $("#active").text(active);
+                    $("#confirmed").text(numberWithCommas(conf));
+                    $("#deaths").text(numberWithCommas(death));
+                    $("#recovered").text(numberWithCommas(rec));
+                    $("#active").text(numberWithCommas(active));
                     $("#mort").text(mort);
                     $("#country").text("Data ("+newCountry+"):");    
                     country = newCountry;
@@ -393,11 +426,11 @@
                     myChart.update();
                     country = "";
                     $("#country").text("Data (Global):")
-                    $("#confirmed").text("{{ infected }}");
-                    $("#deaths").text("{{ deaths}}");
-                    $("#recovered").text("{{ recovered }}");
-                    $("#mort").text("{{ mortality_rate }}%")
-                    $("#active").text("{% active infected deaths recovered %}");
+                    $("#confirmed").text(numberWithCommas("{{ infected }}"));
+                    $("#deaths").text(numberWithCommas("{{ deaths}}"));
+                    $("#recovered").text(numberWithCommas("{{ recovered }}"));
+                    $("#mort").text(numberWithCommas("{{ mortality_rate }}%"));
+                    $("#active").text(numberWithCommas("{% active infected deaths recovered %}"));
                 }
 		    }
         }
