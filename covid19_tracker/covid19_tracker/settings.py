@@ -42,7 +42,7 @@ except ImportError:
         print("Could not create secret key! Do you have permission to create files in the following directory: ")
         print(SETTINGS_DIR)
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 
@@ -119,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-ALLOWED_HOSTS = ['104.248.243.3']
+ALLOWED_HOSTS = ['104.248.243.3', '127.0.0.1']
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
