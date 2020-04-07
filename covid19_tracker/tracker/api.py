@@ -74,7 +74,7 @@ class API:
         Returns:
             (List<Data_Object>) A list of objects which contain the information 
         """
-        url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0&range=A7:I204"
+        url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0&range=A7:I207"
         req = requests.get(url)
         soup = BeautifulSoup(req.text, 'html.parser')
         trs = soup.findAll("tr")[1:]
@@ -86,7 +86,7 @@ class API:
         inf, deaths, rec = self.get_current_number()
 
 
-        url_glob = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0&range=A207:I207"
+        url_glob = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0&range=A210:I210"
         req = requests.get(url_glob)
         soup = BeautifulSoup(req.text, 'html.parser')
         tr = soup.findAll("tr")[1:]
