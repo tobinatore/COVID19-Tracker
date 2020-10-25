@@ -1,6 +1,5 @@
 # COVID19-Tracker
 A python webapp using Django to visualize the recent outbreak of COVID-19. Sources for the data include JHU CSSE and BNO.
-The live version can be found at [covid19app.live](http://covid19app.live)
 
 ## Screenshot:
 ![Screenshot of the main page featuring a table, a map and a chart highlighting confirmed cases and deaths](https://i.imgur.com/njZvR21.png)
